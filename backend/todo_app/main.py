@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from todo_app.models import Todo, TodoCreate, TodoPatch
 from todo_app.repository import SQLiteTodoRepository
-from todo_app.service import TodoNotFound, TodoService, utc_now
+from todo_app.service import Order, Sort, Status, TodoNotFound, TodoService, utc_now
 
 logger = logging.getLogger(__name__)
 
@@ -57,8 +57,8 @@ def create_app(
         return task
 
     @app.get("/api/todos", response_model=list[Todo])
-    def list_tasks():
-        return app.state.service.repository.list()
+    def list_tasks(status: Status = "all", sort: Sort = "createdAt", order: Order = "desc"):
+        return app.state.service.list(status=status, sort=sort, order=order)
 
     @app.get("/api/todos/{task_id}", response_model=Todo)
     def get_task(task_id: UUID):
