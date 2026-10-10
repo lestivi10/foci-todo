@@ -17,3 +17,5 @@ test-results/
 data/
 *.sqlite3
 *.sqlite3-*
+
+*.tsbuildinfo
