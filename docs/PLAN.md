@@ -12,7 +12,7 @@ before implementation; use TDD for domain rules, HTTP behavior, and critical UI
 interactions. Keep commits small and coherent, normally committing a passing
 test/implementation slice after observing the test fail.
 
-## Proposed stack (awaiting interface selection)
+## Selected stack
 
 - React + TypeScript + Vite for the SPA.
 - FastAPI + Pydantic for the HTTP boundary and validation.
@@ -46,7 +46,7 @@ Delegate backend and frontend implementation only after their shared contract
 is written; delegate independent review to challenge edge cases. Agents must
 stay within assigned files and report observed red/green tests.
 
-## Proposed behavioral decisions
+## Behavioral decisions
 
 - A single local user; no authentication. Bind local development to loopback.
 - Server-generated UUID and UTC creation timestamp; clients cannot overwrite them.
@@ -72,7 +72,7 @@ README will include native and Docker setup, test commands, architecture,
 assumptions, tradeoffs, and an honest AI-assistance note. Commit history records
 the actual development sequence; do not manufacture or backdate commits.
 
-## Pending user selections
+## Confirmed selections
 
-- Confirm React/FastAPI or choose TypeScript throughout.
-- Confirm GitHub owner and private/public visibility before remote creation.
+- React/TypeScript SPA, FastAPI, and SQLite approved by the user.
+- Public repository: https://github.com/lestivi10/foci-todo.

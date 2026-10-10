@@ -1,6 +1,6 @@
 # To-do behavior and HTTP contract
 
-Status: implementation contract; framework choice remains pending.
+Status: implementation contract. Stack: React/TypeScript, FastAPI, SQLite.
 
 ## Resource
 
