@@ -35,3 +35,18 @@ def test_partial_updates_preserve_other_writers_changes(tmp_path):
     second.update(task.id, TodoPatch(isCompleted=True))
     assert first.get(task.id).title == "Renamed"
     assert first.get(task.id).is_completed is True
+
+
+def test_concurrent_field_updates_do_not_lose_changes(tmp_path):
+    from concurrent.futures import ThreadPoolExecutor
+
+    service = TodoService(SQLiteTodoRepository(tmp_path / "tasks.sqlite3"))
+    task = service.create(TodoCreate(title="Original"))
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        title = pool.submit(service.update, task.id, TodoPatch(title="Renamed"))
+        status = pool.submit(service.update, task.id, TodoPatch(isCompleted=True))
+        title.result()
+        status.result()
+    stored = service.get(task.id)
+    assert stored.title == "Renamed"
+    assert stored.is_completed is True

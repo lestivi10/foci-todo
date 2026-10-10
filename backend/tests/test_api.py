@@ -97,3 +97,40 @@ def test_unknown_api_route_is_not_spa(tmp_path):
         assert client.get("/api/unknown").status_code == 404
         assert client.get("/api").status_code == 404
         assert client.get("/missing.js").status_code == 404
+
+
+def test_validation_errors_identify_required_field(client):
+    task = client.post("/api/todos", json={"title": "Keep"}).json()
+    for field in ("title", "isCompleted"):
+        response = client.patch(f"/api/todos/{task['id']}", json={field: None})
+        assert response.status_code == 422
+        assert response.json()["detail"][0]["loc"] == ["body", field]
+
+
+def test_database_failure_does_not_expose_internal_details(client, monkeypatch):
+    import sqlite3
+
+    def broken_list():
+        raise sqlite3.OperationalError("private/path/database.sqlite3 is broken")
+
+    monkeypatch.setattr(client.app.state.service.repository, "list", broken_list)
+    response = client.get("/api/todos")
+    assert response.status_code == 503
+    assert response.json() == {"detail": "Task storage is temporarily unavailable"}
+    assert "private/path" not in response.text
+
+
+def test_application_restart_retains_mutations(tmp_path):
+    path = tmp_path / "persisted.sqlite3"
+    with TestClient(create_app(db_path=path)) as first:
+        task = first.post("/api/todos", json={"title": "Persist"}).json()
+        removed = first.post("/api/todos", json={"title": "Remove"}).json()
+        first.patch(f"/api/todos/{task['id']}", json={"isCompleted": True, "description": "Saved"})
+        first.delete(f"/api/todos/{removed['id']}")
+    with TestClient(create_app(db_path=path)) as restarted:
+        tasks = restarted.get("/api/todos").json()
+        assert len(tasks) == 1
+        assert tasks[0]["id"] == task["id"]
+        assert tasks[0]["isCompleted"] is True
+        assert tasks[0]["description"] == "Saved"
+        assert tasks[0]["createdAt"] == task["createdAt"]
