@@ -228,6 +228,9 @@ form label:not(:first-child) {
   color: #566456;
   margin: 19px 0 0;
 }
+.tasks-section {
+  min-width: 0;
+}
 .list-heading {
   display: flex;
   align-items: center;
@@ -271,6 +274,7 @@ form label:not(:first-child) {
   padding: 0;
   margin: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
 .task-card {
@@ -534,7 +538,7 @@ footer span {
     padding-top: 35px;
   }
   .workspace {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 36px;
     margin-top: 30px;
   }

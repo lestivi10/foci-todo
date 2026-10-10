@@ -91,15 +91,23 @@ test("the empty and detail views have no detectable accessibility violations", a
   await expect(page.getByText("A clear page. A fresh start.")).toBeVisible();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= window.innerWidth,
-    ),
-  ).toBeTruthy();
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(page.viewportSize()!.width);
 
   await request.post("/api/todos", {
-    data: { title: "Keyboard accessible task" },
+    data: {
+      title: "Keyboard accessible task",
+      description:
+        "A long description must truncate inside the task card without widening the mobile page or hiding controls beyond the viewport.",
+    },
   });
   await page.reload();
+  await expect(
+    page.getByRole("button", { name: "Keyboard accessible task", exact: true }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(page.viewportSize()!.width);
   await page
     .getByRole("button", { name: "Keyboard accessible task", exact: true })
     .click();
