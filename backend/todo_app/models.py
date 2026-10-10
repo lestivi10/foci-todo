@@ -12,7 +12,7 @@ from pydantic import (
     Field,
     StrictBool,
     StringConstraints,
-    model_validator,
+    field_validator,
 )
 
 
@@ -48,13 +48,12 @@ class TodoPatch(RequestModel):
     due_date: CalendarDate = Field(default=None, alias="dueDate")
     is_completed: StrictBool | None = Field(default=None, alias="isCompleted")
 
-    @model_validator(mode="after")
-    def reject_required_nulls(self):
-        for name in ("title", "is_completed"):
-            if name in self.model_fields_set and getattr(self, name) is None:
-                alias = self.__class__.model_fields[name].alias or name
-                raise ValueError(f"{alias} cannot be null")
-        return self
+    @field_validator("title", "is_completed", mode="before")
+    @classmethod
+    def reject_required_nulls(cls, value):
+        if value is None:
+            raise ValueError("This field cannot be null")
+        return value
 
 
 class Todo(BaseModel):
