@@ -14,16 +14,14 @@ it("sends filters and ordering through the typed list boundary", async () => {
 it("preserves structured validation errors", async () => {
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValue(
-        new Response(
-          JSON.stringify({
-            detail: [{ loc: ["body", "title"], msg: "Title is required" }],
-          }),
-          { status: 422 },
-        ),
+    vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          detail: [{ loc: ["body", "title"], msg: "Title is required" }],
+        }),
+        { status: 422 },
       ),
+    ),
   );
   await expect(api.create({ title: "" })).rejects.toMatchObject({
     message: "title: Title is required",

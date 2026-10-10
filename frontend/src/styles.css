@@ -98,7 +98,7 @@ main {
   font-size: 10px;
   font-weight: 750;
   letter-spacing: 1.9px;
-  color: #64776a;
+  color: #566456;
 }
 .intro h1 {
   font-family: Georgia, "Times New Roman", serif;
@@ -109,7 +109,7 @@ main {
   margin: 15px 0 15px;
 }
 .intro > p:last-child {
-  color: #6a756d;
+  color: #566456;
   font-size: 15px;
 }
 .workspace {
@@ -172,7 +172,7 @@ textarea {
 }
 input::placeholder,
 textarea::placeholder {
-  color: #838b83;
+  color: #566456;
 }
 form label:not(:first-child) {
   margin-top: 18px;
@@ -181,7 +181,7 @@ form label:not(:first-child) {
   float: right;
   font-size: 10px;
   font-weight: 400;
-  color: #757f75;
+  color: #566456;
   padding-top: 2px;
 }
 .form-actions {
@@ -225,7 +225,7 @@ form label:not(:first-child) {
 .composer-footnote {
   text-align: center;
   font-size: 11px;
-  color: #7b847a;
+  color: #566456;
   margin: 19px 0 0;
 }
 .list-heading {
@@ -323,11 +323,11 @@ form label:not(:first-child) {
 }
 .is-complete .task-title {
   text-decoration: line-through;
-  color: #738074;
+  color: #566456;
 }
 .task-preview {
   font-size: 12px;
-  color: #738074;
+  color: #566456;
   margin: 5px 0 0;
   white-space: nowrap;
   overflow: hidden;
@@ -340,7 +340,7 @@ form label:not(:first-child) {
   align-items: center;
   gap: 11px;
   font-size: 10px;
-  color: #6f7c71;
+  color: #566456;
   margin-top: 13px;
 }
 .status-pill {
@@ -369,7 +369,7 @@ form label:not(:first-child) {
 }
 .list-footnote {
   font-size: 11px;
-  color: #7e887d;
+  color: #566456;
   margin-top: 19px;
 }
 .empty-state {
@@ -377,7 +377,7 @@ form label:not(:first-child) {
   border: 1px dashed #ced6c8;
   border-radius: 12px;
   padding: 58px 20px;
-  color: #71806f;
+  color: #566456;
   font-size: 13px;
 }
 .empty-state h3 {
@@ -422,7 +422,7 @@ footer {
   display: flex;
   justify-content: space-between;
   font-size: 11px;
-  color: #7f897d;
+  color: #566456;
 }
 footer span {
   font-size: 9px;
@@ -462,7 +462,7 @@ footer span {
   background: none;
   border: 0;
   font-size: 26px;
-  color: #728071;
+  color: #566456;
   padding: 0 8px;
 }
 .detail-meta {
@@ -470,7 +470,7 @@ footer span {
   flex-wrap: wrap;
   gap: 8px 18px;
   font-size: 11px;
-  color: #728071;
+  color: #566456;
   margin-bottom: 22px;
 }
 .task-id {

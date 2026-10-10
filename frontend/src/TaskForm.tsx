@@ -4,8 +4,9 @@ interface Props {
   task?: Todo;
   onSave: (input: TodoInput) => Promise<void>;
   onCancel?: () => void;
+  onPendingChange?: (pending: boolean) => void;
 }
-export function TaskForm({ task, onSave, onCancel }: Props) {
+export function TaskForm({ task, onSave, onCancel, onPendingChange }: Props) {
   const [title, setTitle] = useState(task?.title ?? "");
   const [description, setDescription] = useState(task?.description ?? "");
   const [dueDate, setDueDate] = useState(task?.dueDate ?? "");
@@ -28,6 +29,7 @@ export function TaskForm({ task, onSave, onCancel }: Props) {
       return;
     }
     setPending(true);
+    onPendingChange?.(true);
     setError("");
     try {
       await onSave({
@@ -48,6 +50,7 @@ export function TaskForm({ task, onSave, onCancel }: Props) {
       );
     } finally {
       setPending(false);
+      onPendingChange?.(false);
     }
   }
   return (

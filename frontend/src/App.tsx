@@ -14,13 +14,12 @@ const message = (error: unknown) =>
     : "Something went wrong. Please try again.";
 function dateLabel(date: string) {
   // Calendar dates deliberately stay out of the local timezone conversion path.
-  const [year, month, day] = date.split("-").map(Number);
   return new Intl.DateTimeFormat("en", {
     month: "short",
     day: "numeric",
     year: "numeric",
     timeZone: "UTC",
-  }).format(new Date(Date.UTC(year, month - 1, day)));
+  }).format(new Date(`${date}T00:00:00Z`));
 }
 export default function App() {
   const [query, setQuery] = useState(initialQuery);
@@ -33,6 +32,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Todo | null>(null);
   const [detailError, setDetailError] = useState("");
+  const [editPending, setEditPending] = useState(false);
   const [detailRevision, setDetailRevision] = useState(0);
   const [deleting, setDeleting] = useState<Todo | null>(null);
   const [deleteError, setDeleteError] = useState("");
@@ -317,7 +317,11 @@ export default function App() {
         Less noise. More doing.<span>DAYLIST</span>
       </footer>
       {selectedId && (
-        <Modal title="Task details" onClose={() => setSelectedId(null)}>
+        <Modal
+          title="Task details"
+          busy={editPending}
+          onClose={() => setSelectedId(null)}
+        >
           {detailError ? (
             <div role="alert">
               <p>{detailError}</p>
@@ -337,6 +341,7 @@ export default function App() {
               <TaskForm
                 key={selected.id}
                 task={selected}
+                onPendingChange={setEditPending}
                 onCancel={() => setSelectedId(null)}
                 onSave={async (input) => {
                   await api.update(selected.id, input);

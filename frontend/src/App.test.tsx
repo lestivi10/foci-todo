@@ -143,3 +143,38 @@ it("prevents duplicate creation while a save is pending", async () => {
   expect(screen.getByRole("button", { name: "Adding…" })).toBeDisabled();
   expect(api.create).toHaveBeenCalledTimes(1);
 });
+
+it("keeps a pending edit open and preserves the form if saving fails", async () => {
+  const user = userEvent.setup();
+  let rejectSave!: (error: Error) => void;
+  vi.mocked(api.list).mockResolvedValue([task]);
+  vi.mocked(api.get).mockResolvedValue(task);
+  vi.mocked(api.update).mockReturnValue(
+    new Promise((_, reject) => {
+      rejectSave = reject;
+    }),
+  );
+  render(<App />);
+  await user.click(
+    await screen.findByRole("button", { name: "Prepare notes" }),
+  );
+  const title = await screen.findByLabelText("Edit title");
+  await user.clear(title);
+  await user.type(title, "Unsaved changes");
+  await user.click(screen.getByRole("button", { name: "Save changes" }));
+  expect(screen.getByRole("button", { name: "Close dialog" })).toBeDisabled();
+  await user.keyboard("{Escape}");
+  expect(screen.getByRole("dialog")).toBeInTheDocument();
+  rejectSave(new Error("Save failed. Try again."));
+  expect(
+    await screen.findByText("Save failed. Try again."),
+  ).toBeInTheDocument();
+  expect(screen.getByLabelText("Edit title")).toHaveValue("Unsaved changes");
+  expect(screen.getByRole("button", { name: "Close dialog" })).toBeEnabled();
+});
+
+it("renders early calendar years without shifting them into the twentieth century", async () => {
+  vi.mocked(api.list).mockResolvedValue([{ ...task, dueDate: "0099-01-01" }]);
+  render(<App />);
+  expect(await screen.findByText("Overdue · Jan 1, 99")).toBeInTheDocument();
+});
